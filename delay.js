@@ -1,7 +1,5 @@
-// Exercise-1: Delay
-
+// Exercise-1: Delay LIFTOFF!
 var Promise = require('bluebird');
-
 
 function delay(ms, str) {
     return new Promise(function(resolve) {
@@ -11,10 +9,6 @@ function delay(ms, str) {
         }, ms);
     });
 }
-
-
-
-
 
 delay(1000, "ONE").then(
     function(value) {
@@ -38,31 +32,3 @@ delay(1000, "ONE").then(
         console.log(error.message);
     }      
 );
-
-
-
-// var delayPart1 = delay.then(
-//     function(value) {
-//         console.log("ONE");
-//         return "HELLO FROM FIRST PROMISE!";
-//     },
-//     function(error) {
-//         console.log(error.message);
-//     }        
-// )
-
-
-
-
-
-
-
-// var myNewPromise = myPromise.then(
-//     function(value) {
-//         console.log("First promise: " + value);
-//         return "HELLO FROM FIRST PROMISE!";
-//     },
-//     function(error) {
-//         console.log(error.message);
-//     }
-// );
