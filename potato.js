@@ -49,9 +49,6 @@ function delay(ms) {
 }
 
 function getFirstAndLastCharParallel(str){
-    // var firstPromise = getFirstChar(str);
-    // var lastPromise = getLastChar(str);
-    
     return Promise.join(getFirstChar(str), getLastChar(str), function(first, last){
        return first + last; 
     });

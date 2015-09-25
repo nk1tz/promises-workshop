@@ -3,13 +3,20 @@ var Promise = require('bluebird');
 var request = Promise.promisify(require("request"));
 var prompt = Promise.promisifyAll(require('prompt'));
 
+
 // -----------------------------------------------
 //                      MAIN
 // -----------------------------------------------
 
-var distance = getUserDistanceToIss();
 
-console.log("\nThe distance between you and the ISS is: " + Math.round(distance) / 1000 + " kilometers\nOr approximately " + Math.round(distance) / 1000000 + " times the width of France.");
+
+
+getUserDistanceToIss()
+.then(function(distance){
+    console.log("\nThe distance between you and the ISS is: " + Math.round(distance / 1000) + " kilometers\nOr approximately " + Math.round(distance / 1000000) + " times the width of France.");
+});
+
+
 
 
 
@@ -17,37 +24,40 @@ console.log("\nThe distance between you and the ISS is: " + Math.round(distance)
     //__________________________\\
                         
 function getUserDistanceToIss (){
-    return Promise.join(getUserLocation, getIssLocation, function(user, iss){
-        return distanceToISS(user, iss);
+    return Promise.join(getUserLocation(), getIssLocation(), function(user, iss){
+        var distance = distanceToISS(user, iss);
+        return distance;
     });
 }
                         
 function getIssLocation(){
     return request('http://api.open-notify.org/iss-now.json')
-    .then(function(body) {
+    .then(function(result) {
         var iss = {};
+        var body = result[1];
         var issInfo = JSON.parse(body);
         iss.lat = issInfo.iss_position.latitude;
         iss.lon = issInfo.iss_position.longitude;
         return iss;
     }).catch(function(err){
-    
         console.log(err, "error");
     });
 }
                         
 function getUserLocation(){
-    prompt.start();
     return prompt.getAsync('location')
     .then( function(result){
-        request('https://maps.googleapis.com/maps/api/geocode/json?address=' + result.location +"");
+        return request('https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyCqB6bDHnvEmYxcRm5qg6yso2V9Q4MbOiE&address=' + result.location);
     })
-    .then(function(body) {
+    .then(function(result2) {
         var user = {};
+        var body = result2[1];
         var userLocationInfo = JSON.parse(body);
         user.lat = userLocationInfo.results[0].geometry.location.lat;
         user.lon = userLocationInfo.results[0].geometry.location.lng;
         return user;
+    }).catch(function(err){
+        console.log(err, "error");
     });
 }
 
